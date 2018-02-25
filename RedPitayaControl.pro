@@ -6,9 +6,13 @@
 
 QT       += core gui network
 
-INCLUDEPATH += /usr/include/qwt
+#INCLUDEPATH += /usr/include/qwt
+#LIBS += -lqwt-qt5
 
-LIBS += -lqwt-qt5
+INCLUDEPATH += /usr/local/qwt-6.1.3/include
+LIBS += -L /usr/local/qwt-6.1.3/lib -lqwt
+
+
 
 greaterThan(QT_MAJOR_VERSION, 4): QT += widgets
 
@@ -49,4 +53,4 @@ FORMS    += redpitayacontroldialog.ui \
 
 RESOURCES += \
     resource.qrc
-
+CONFIG  +=  qwt

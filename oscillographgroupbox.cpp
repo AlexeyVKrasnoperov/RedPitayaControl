@@ -9,7 +9,7 @@ OscillographGroupBox::OscillographGroupBox(QWidget *parent) :
 {
     ui->setupUi(this);
     viewer = new ChannelViewer(this);
-    ui->horizontalLayoutMain->insertWidget(0,viewer);
+    ui->verticalLayout->insertWidget(1,viewer);
     setRPClient(0);
     timer.setSingleShot(true);
     timer.setInterval(50);

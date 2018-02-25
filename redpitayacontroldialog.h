@@ -14,6 +14,7 @@ class QRadioButton;
 class QButtonGroup;
 class GeneratorGroupBox;
 class OscillographGroupBox;
+class QPushButton;
 
 class RedPitayaControlDialog : public QDialog
 {
@@ -29,6 +30,8 @@ private slots:
 
     void ledButtonClickedSlot(int id);
 
+    void on_pushButtonClose_clicked();
+
 private:
     Ui::RedPitayaControlDialog *ui;
     RPClient *rpClient;
@@ -37,6 +40,7 @@ private:
     void updateStatus(void);
     void closeConnection(void);
     QButtonGroup ledButtons;
+    QPushButton *exit;
 };
 
 

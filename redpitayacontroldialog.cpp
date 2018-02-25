@@ -6,6 +6,7 @@
 #include "oscillographgroupbox.h"
 #include <QRadioButton>
 
+
 RedPitayaControlDialog::RedPitayaControlDialog(QWidget *parent) :
     QDialog(parent),
     ui(new Ui::RedPitayaControlDialog)
@@ -28,7 +29,7 @@ RedPitayaControlDialog::RedPitayaControlDialog(QWidget *parent) :
     connect(&ledButtons,SIGNAL(buttonClicked(int)),this,SLOT(ledButtonClickedSlot(int)));
     //
     updateStatus();
-    ui->pushButtonClose->setEnabled(false);
+    ui->pushButtonClose->setEnabled(true);
 }
 
 RedPitayaControlDialog::~RedPitayaControlDialog()
@@ -99,4 +100,10 @@ void RedPitayaControlDialog::ledButtonClickedSlot(int id)
         if( ! rpClient->setLedState(id,isChecked) )
             b->setChecked(!isChecked);
     }
+}
+
+void RedPitayaControlDialog::on_pushButtonClose_clicked()
+{
+    exit=new QPushButton (this);
+    connect(exit, SIGNAL(clicked()), this, SLOT(quit()));
 }

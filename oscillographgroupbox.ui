@@ -6,23 +6,26 @@
    <rect>
     <x>0</x>
     <y>0</y>
-    <width>94</width>
-    <height>162</height>
+    <width>414</width>
+    <height>349</height>
    </rect>
   </property>
   <property name="windowTitle">
    <string>GroupBox</string>
   </property>
   <property name="title">
-   <string>Oscillograph</string>
+   <string>Graphic</string>
   </property>
-  <layout class="QHBoxLayout" name="horizontalLayoutMain">
+  <property name="alignment">
+   <set>Qt::AlignCenter</set>
+  </property>
+  <layout class="QVBoxLayout" name="verticalLayout">
    <item>
     <widget class="QGroupBox" name="groupBoxControl">
      <property name="title">
       <string>Control</string>
      </property>
-     <layout class="QVBoxLayout" name="verticalLayout">
+     <layout class="QHBoxLayout" name="horizontalLayout">
       <item>
        <widget class="QPushButton" name="pushButtonAcq">
         <property name="text">
@@ -38,14 +41,21 @@
        </widget>
       </item>
       <item>
-       <spacer name="verticalSpacer">
+       <widget class="QLabel" name="label">
+        <property name="text">
+         <string>Вкл/Выкл</string>
+        </property>
+       </widget>
+      </item>
+      <item>
+       <spacer name="horizontalSpacer">
         <property name="orientation">
-         <enum>Qt::Vertical</enum>
+         <enum>Qt::Horizontal</enum>
         </property>
         <property name="sizeHint" stdset="0">
          <size>
-          <width>20</width>
-          <height>40</height>
+          <width>40</width>
+          <height>20</height>
          </size>
         </property>
        </spacer>
