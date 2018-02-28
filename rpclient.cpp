@@ -1,14 +1,22 @@
 #include "rpclient.h"
+#include "rpdatathread.h"
 #include <unistd.h>
+
 
 RPClient::RPClient(const QString & name, QObject *parent):QTcpSocket(parent),
     hostname(name)
 {
     timeout = 500;
+    dataThread = 0;
 }
 
 RPClient::~RPClient()
 {
+    if( dataThread != 0 )
+    {
+        delete dataThread;
+        dataThread = 0;
+    }
     if( isOpen() )
     {
         resetGenerator();
@@ -29,7 +37,7 @@ bool RPClient::writeCommand(const QString & cmd)
     QByteArray array(cmd.toLatin1());
     array += "\r\n";
     write(array);
-    return waitForBytesWritten(timeout);
+    return true ;//waitForBytesWritten(timeout);
 }
 
 bool RPClient::readResponse(QByteArray & response)
@@ -53,7 +61,6 @@ bool RPClient::readResponse(QByteArray & response)
     return !response.isEmpty();
 }
 
-
 bool RPClient::getLedState(int led, unsigned short & state)
 {
     state = 0;
@@ -62,7 +69,7 @@ bool RPClient::getLedState(int led, unsigned short & state)
     if( ! writeCommand(QString("DIG:PIN? LED%1").arg(led)) )
         return false;
     QByteArray response;
-    if( ! readResponse(response) )
+    if( ! readResponse(response))
         return false;
     if( response.size() != 1 )
         return false;
@@ -104,7 +111,7 @@ bool RPClient::getGeneratorChannelState(int channel, unsigned short & state)
     if( ! writeCommand(QString("OUTPUT%1:STATE?").arg(channel)) )
         return false;
     QByteArray response;
-    if( ! readResponse(response) )
+    if( ! readResponse(response))
         return false;
     if( response.size() != 1 )
         return false;
@@ -132,7 +139,7 @@ bool RPClient::getGeneratorFunction(int channel, QString &func)
     if( ! writeCommand(QString("SOUR%1:FUNC?").arg(channel)) )
         return false;
     QByteArray response;
-    if( ! readResponse(response) )
+    if( ! readResponse(response))
         return false;
     func = response;
     qDebug() << func;
@@ -154,7 +161,7 @@ bool RPClient::getGeneratorFrequency(int channel, QString &freq)
     if( ! writeCommand(QString("SOUR%1:FREQ:FIX?").arg(channel)) )
         return false;
     QByteArray response;
-    if( ! readResponse(response) )
+    if( ! readResponse(response))
         return false;
     freq = response;
     qDebug() << freq;
@@ -175,7 +182,7 @@ bool RPClient::getGeneratorAmplitude(int channel, QString &ampl)
     if( ! writeCommand(QString("SOUR%1:VOLT?").arg(channel)) )
         return false;
     QByteArray response;
-    if( ! readResponse(response) )
+    if( ! readResponse(response))
         return false;
     ampl = response;
     qDebug() << ampl;
@@ -196,7 +203,7 @@ bool RPClient::getGeneratorPhase(int channel, QString &phase)
     if( ! writeCommand(QString("SOUR%1:PHAS?").arg(channel)) )
         return false;
     QByteArray response;
-    if( ! readResponse(response) )
+    if( ! readResponse(response))
         return false;
     phase = response;
     qDebug() << phase;
@@ -217,7 +224,7 @@ bool RPClient::getGeneratorDutyCycle(int channel, QString &dcycle)
     if( ! writeCommand(QString("SOUR%1:DCYC?").arg(channel)) )
         return false;
     QByteArray response;
-    if( ! readResponse(response) )
+    if( ! readResponse(response))
         return false;
     dcycle = response;
     qDebug() << dcycle;
@@ -229,5 +236,51 @@ bool RPClient::setGeneratorDutyCycle(int channel, const QString & dcycle)
     if( (channel < 1) || (channel > 2) )
         return false;
     return writeCommand(QString("SOUR%1:DCYC %2").arg(channel).arg(dcycle));
+}
+
+bool RPClient::resetOscilloscope(void)
+{
+    if( ! writeCommand("ACQ:RST") )
+        return false;
+    if( ! writeCommand("ACQ:DEC 1") )
+        return false;
+    return setTriggerLevel(0);
+}
+
+bool RPClient::setTriggerDelay(int delay)
+{
+    return writeCommand(QString("ACQ:TRIG:DLY %1").arg(delay));
+}
+
+bool RPClient::setTriggerLevel(int level)
+{
+    return writeCommand(QString("ACQ:TRIG:LEV %1").arg(level));
+}
+
+bool RPClient::startAcquisition(void)
+{
+    if( ! writeCommand("ACQ:START") )
+        return false;
+    if( dataThread == 0 )
+        dataThread = new RPDataThread(this);
+    //    writeCommand("ACQ:DATA:UNITS RAW");
+    dataThread->start();
+    return true;
+}
+
+bool RPClient::stopAcquisition(void)
+{
+    dataThread->stop();
+    return writeCommand("ACQ:STOP");
+}
+
+bool RPClient::setTriggerSource(const char *source)
+{
+    return writeCommand(QString("ACQ:TRIG %1").arg(source));
+}
+
+bool RPClient::askTriggerStatus(void)
+{
+    return writeCommand("ACQ:TRIG:STAT?");
 }
 

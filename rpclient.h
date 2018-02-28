@@ -2,15 +2,22 @@
 #define RPCLIENT_H
 
 #include <QTcpSocket>
+#include <QThread>
+#include <QMutex>
 
-class RPClient : public QTcpSocket
+class RPDataThread;
+
+class RPClient: public QTcpSocket
 {
     Q_OBJECT
 protected:
+    RPDataThread *dataThread;
     QString hostname;
-    int  timeout;
-    bool writeCommand(const QString & cmd);
+    int  timeout;    
     bool readResponse(QByteArray & response);
+protected slots:
+    bool askTriggerStatus(void);
+    bool writeCommand(const QString & cmd);
 public:
     RPClient(const QString & name, QObject *parent = Q_NULLPTR);
     virtual ~RPClient(void);
@@ -40,8 +47,27 @@ public:
     bool setGeneratorPhase(int channel, const QString &phase);
     bool getGeneratorDutyCycle(int channel, QString &dcycle);
     bool setGeneratorDutyCycle(int channel, const QString &dcycle);
-
     //
+    bool resetOscilloscope(void);
+    bool setTriggerDelay(int delay);
+    bool setTriggerLevel(int level);
+    bool setTriggerSource(const char *source);
+    bool startAcquisition(void);
+    bool stopAcquisition(void);
+signals:
+    void updateChannelData(int channel, const QVector<double> & data);
 };
 
 #endif // RPCLIENT_H
+
+//class RPDataThread : public QThread
+//{
+//    Q_OBJECT
+//protected:
+//    bool breakCycle;
+//    RPClient *client;
+//public:
+//    RPDataThread(RPClient *_client,QObject *parent = nullptr);
+//    virtual ~RPDataThread(void);
+//};
+

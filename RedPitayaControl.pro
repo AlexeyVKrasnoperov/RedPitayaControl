@@ -6,11 +6,11 @@
 
 QT       += core gui network
 
-#INCLUDEPATH += /usr/include/qwt
-#LIBS += -lqwt-qt5
+INCLUDEPATH += /usr/include/qwt
+LIBS += -lqwt-qt5
 
-INCLUDEPATH += /usr/local/qwt-6.1.3/include
-LIBS += -L /usr/local/qwt-6.1.3/lib -lqwt
+#INCLUDEPATH += /usr/local/qwt-6.1.3/include
+#LIBS += -L /usr/local/qwt-6.1.3/lib -lqwt
 
 
 
@@ -37,7 +37,8 @@ SOURCES += main.cpp\
     generatorgroupbox.cpp \
     oscillographgroupbox.cpp \
     channelviewer.cpp \
-    utils.cxx
+    utils.cxx \
+    rpdatathread.cpp
 
 HEADERS  += redpitayacontroldialog.h \
     rpclient.h \
@@ -45,7 +46,8 @@ HEADERS  += redpitayacontroldialog.h \
     oscillographgroupbox.h \
     channelviewer.h \
     typedef.h \
-    utils.h
+    utils.h \
+    rpdatathread.h
 
 FORMS    += redpitayacontroldialog.ui \ 
     generatorgroupbox.ui \
@@ -53,4 +55,3 @@ FORMS    += redpitayacontroldialog.ui \
 
 RESOURCES += \
     resource.qrc
-CONFIG  +=  qwt

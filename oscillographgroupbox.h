@@ -3,6 +3,7 @@
 
 #include <QGroupBox>
 #include <QTimer>
+#include <QButtonGroup>
 
 namespace Ui {
 class OscillographGroupBox;
@@ -23,11 +24,14 @@ public:
 private slots:
     void on_pushButtonAcq_clicked(bool checked);
     void timeoutSlot(void);
+    void channelControlClicked(int);
+    void updateChannelDataSlot(int channel, const QVector<double> & data);
 private:
     Ui::OscillographGroupBox *ui;
     ChannelViewer *viewer;
     RPClient *rpClient;
     QTimer timer;
+    QButtonGroup channelControl;
 };
 
 #endif // OSCILLOGRAPHGROUPBOX_H

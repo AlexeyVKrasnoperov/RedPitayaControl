@@ -42,7 +42,8 @@ public:
     ~ChannelViewer(void);
     void Update();
     void ClearPlot(void);
-    void setChannelData(int channel, QVector<double> & xData, QVector<double> & yData );
+    void setChannelData(int channel, const QVector<double> & xData, const QVector<double> & yData );
+    void showChannelCurve(int channel, bool on);
 public slots:
     void setAutoScaleY(bool set);
     void setTimeScaleX(bool set);

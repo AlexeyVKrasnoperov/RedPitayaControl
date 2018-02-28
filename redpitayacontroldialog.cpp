@@ -14,10 +14,10 @@ RedPitayaControlDialog::RedPitayaControlDialog(QWidget *parent) :
     ui->setupUi(this);
     rpClient  = 0;
     generator = new GeneratorGroupBox(this);
-    ui->verticalLayoutControl->insertWidget(2,generator);
+    ui->verticalLayoutControl->insertWidget(1,generator);
     //
     oscillograph = new OscillographGroupBox(this);
-    ui->verticalLayoutOscillograph->insertWidget(0,oscillograph);
+    ui->horizontalLayoutMain->insertWidget(0,oscillograph);
     //
     ledButtons.setExclusive(false);
     for(int i = 0; i < 8; i++)
@@ -29,7 +29,7 @@ RedPitayaControlDialog::RedPitayaControlDialog(QWidget *parent) :
     connect(&ledButtons,SIGNAL(buttonClicked(int)),this,SLOT(ledButtonClickedSlot(int)));
     //
     updateStatus();
-    ui->pushButtonClose->setEnabled(true);
+    oscillograph->setFocus();
 }
 
 RedPitayaControlDialog::~RedPitayaControlDialog()
@@ -100,10 +100,4 @@ void RedPitayaControlDialog::ledButtonClickedSlot(int id)
         if( ! rpClient->setLedState(id,isChecked) )
             b->setChecked(!isChecked);
     }
-}
-
-void RedPitayaControlDialog::on_pushButtonClose_clicked()
-{
-    exit=new QPushButton (this);
-    connect(exit, SIGNAL(clicked()), this, SLOT(quit()));
 }

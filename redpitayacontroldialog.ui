@@ -6,8 +6,8 @@
    <rect>
     <x>0</x>
     <y>0</y>
-    <width>196</width>
-    <height>224</height>
+    <width>151</width>
+    <height>226</height>
    </rect>
   </property>
   <property name="windowTitle">
@@ -15,14 +15,8 @@
   </property>
   <layout class="QVBoxLayout" name="verticalLayout_2">
    <item>
-    <widget class="QSplitter" name="splitter">
-     <property name="orientation">
-      <enum>Qt::Horizontal</enum>
-     </property>
-     <widget class="QWidget" name="oscillographWidget" native="true">
-      <layout class="QVBoxLayout" name="verticalLayoutOscillograph"/>
-     </widget>
-     <widget class="QWidget" name="layoutWidget">
+    <layout class="QHBoxLayout" name="horizontalLayoutMain">
+     <item>
       <layout class="QVBoxLayout" name="verticalLayoutControl">
        <item>
         <widget class="QGroupBox" name="groupBoxHostName">
@@ -84,8 +78,8 @@
         </spacer>
        </item>
       </layout>
-     </widget>
-    </widget>
+     </item>
+    </layout>
    </item>
    <item>
     <layout class="QHBoxLayout" name="horizontalLayout">

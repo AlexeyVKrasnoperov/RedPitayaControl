@@ -1,6 +1,5 @@
 #include "channelviewer.h"
 #include "qwt_plot_curve.h"
-#include <qwt_legend.h>
 #include <qwt_plot.h>
 #include <qwt_plot_grid.h>
 #include <qwt_scale_draw.h>
@@ -91,7 +90,7 @@ void ChannelViewer::ReadSettings(void)
     settings.endGroup();
 }
 //
-void ChannelViewer::setChannelData(int channel, QVector<double> & xData, QVector<double> & yData)
+void ChannelViewer::setChannelData(int channel, const QVector<double> & xData, const QVector<double> & yData)
 {
     if( (channel < 1) || (channel > 2) )
         return;
@@ -104,7 +103,6 @@ void ChannelViewer::setChannelData(int channel, QVector<double> & xData, QVector
         pen.setWidthF(1.5);
         curve->setPen(pen);
         curve->setRenderHint(QwtPlotItem::RenderAntialiased, true);
-        curve->setLegendAttribute(QwtPlotCurve::LegendShowLine, true);
         curve->attach(this);
         plotCurves[channel-1] = curve;
     }
@@ -116,7 +114,6 @@ void ChannelViewer::setChannelData(int channel, QVector<double> & xData, QVector
 void ChannelViewer::Update(void)
 {
     ClearPlot();
-    insertLegend(new QwtLegend(), QwtPlot::RightLegend);
     grid->enableX(showGrid);
     grid->enableY(showGrid);
     replot();
@@ -124,8 +121,6 @@ void ChannelViewer::Update(void)
 
 void ChannelViewer::ClearPlot(void)
 {
-    if( legend()!= 0 )
-        delete legend();
     for(size_t i = 0; i < plotCurves.size(); i++)
     {
         if( plotCurves[i] != 0 )
@@ -261,3 +256,15 @@ void ChannelViewer::setShowGrid(bool set)
     Update();
 }
 //
+void ChannelViewer::showChannelCurve(int channel, bool on)
+{
+    if( (channel < 1) || (channel > 2) )
+        return;
+    QwtPlotCurve *curve = plotCurves[channel-1];
+    if( curve == 0 )
+        return;
+    if( on )
+        curve->attach(this);
+    else
+        curve->detach();
+}
