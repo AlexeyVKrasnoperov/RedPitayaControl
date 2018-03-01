@@ -6,11 +6,11 @@
 
 QT       += core gui network
 
-INCLUDEPATH += /usr/include/qwt
-LIBS += -lqwt-qt5
+#INCLUDEPATH += /usr/include/qwt
+#LIBS += -lqwt-qt5
 
-#INCLUDEPATH += /usr/local/qwt-6.1.3/include
-#LIBS += -L /usr/local/qwt-6.1.3/lib -lqwt
+INCLUDEPATH += /usr/local/qwt-6.1.3/include
+LIBS += -L /usr/local/qwt-6.1.3/lib -lqwt
 
 
 

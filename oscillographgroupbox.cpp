@@ -40,6 +40,9 @@ void OscillographGroupBox::setRPClient(RPClient *client)
     {
         rpClient->resetOscilloscope();
         rpClient->setTriggerSource("CH1_PE");
+        rpClient->setTriggerDelay(0);
+        rpClient->setTriggerDecimation(65536);
+        rpClient->setTriggerGain(1,0);
         connect(rpClient,SIGNAL(updateChannelData(int,QVector<double>)),this,SLOT(updateChannelDataSlot(int,QVector<double>)));
     }
 }
