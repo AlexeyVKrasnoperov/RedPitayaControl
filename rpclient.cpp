@@ -213,7 +213,7 @@ bool RPClient::resetOscilloscope(void)
         return false;
     if( ! writeCommand("ACQ:DATA:UNITS RAW") )
         return false;
-    return setTriggerLevel(0.5);
+    return setTriggerLevel(0);
 }
 
 bool RPClient::setTriggerDelay(int delay)
@@ -225,6 +225,27 @@ bool RPClient::setTriggerLevel(int level)
 {
     return writeCommand(QString("ACQ:TRIG:LEV %1").arg(level));
 }
+
+//отвечает за частоту дискретизации. max: 125Ms/s->decimation-это коэффициент для выбора частоты дискретизации,
+//по умолчанию сглаживание сигнала включено, за это отвечает average.
+
+bool RPClient::setTriggerDecimation(int decimation)
+{
+    return writeCommand(QString("ACQ:DEC %1").arg(decimation));
+}
+
+bool RPClient::setTriggerGain(int channel, bool value)
+{
+    if( (channel < 1) || (channel > 2) )
+        return false;
+    QString cmd = QString("ACQ:SOUR%1:GAIN ").arg(channel);
+    if( value )
+        cmd += "LV";
+    else
+        cmd += "HV";
+    return writeCommand(cmd);
+}
+
 
 bool RPClient::startAcquisition(void)
 {

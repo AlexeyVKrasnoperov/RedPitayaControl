@@ -6,13 +6,15 @@
 
 QT       += core gui network
 
-INCLUDEPATH += /usr/include/qwt
-LIBS += -lqwt-qt5
+exists( /usr/include/qwt ) {
+    INCLUDEPATH += /usr/include/qwt
+    LIBS += -lqwt-qt5
+}
 
-#INCLUDEPATH += /usr/local/qwt-6.1.3/include
-#LIBS += -L /usr/local/qwt-6.1.3/lib -lqwt
-
-
+exists( /usr/local/qwt-6.1.3/include ) {
+    INCLUDEPATH += /usr/local/qwt-6.1.3/include
+    LIBS += -L /usr/local/qwt-6.1.3/lib -lqwt
+}
 
 greaterThan(QT_MAJOR_VERSION, 4): QT += widgets
 

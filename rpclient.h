@@ -56,6 +56,8 @@ public:
     bool resetOscilloscope(void);
     bool setTriggerDelay(int delay);
     bool setTriggerLevel(int level);
+    bool setTriggerDecimation(int decimation);
+    bool setTriggerGain(int channel, bool value);
     bool setTriggerSource(const char *source);
     bool startAcquisition(void);
     bool stopAcquisition(void);
