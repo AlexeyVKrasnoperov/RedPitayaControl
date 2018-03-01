@@ -32,6 +32,8 @@ private slots:
 
     void on_spinBoxDutyCycle_valueChanged(int arg1);
 
+    void responseSlot(const QString & cmd, const QByteArray & response);
+
 private:
     Ui::GeneratorGroupBox *ui;
     RPClient *rpClient;

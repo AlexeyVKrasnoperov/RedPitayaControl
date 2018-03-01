@@ -14,6 +14,7 @@ class QRadioButton;
 class QButtonGroup;
 class GeneratorGroupBox;
 class OscillographGroupBox;
+class LedControlGroupBox;
 class QPushButton;
 
 class RedPitayaControlDialog : public QDialog
@@ -28,16 +29,14 @@ private slots:
 
     void on_comboBoxHostName_currentIndexChanged(const QString &arg1);
 
-    void ledButtonClickedSlot(int id);
-
 private:
     Ui::RedPitayaControlDialog *ui;
     RPClient *rpClient;
     GeneratorGroupBox *generator;
     OscillographGroupBox *oscillograph;
+    LedControlGroupBox *ledControl;
     void updateStatus(void);
     void closeConnection(void);
-    QButtonGroup ledButtons;
 };
 
 

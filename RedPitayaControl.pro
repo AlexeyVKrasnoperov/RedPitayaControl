@@ -38,7 +38,7 @@ SOURCES += main.cpp\
     oscillographgroupbox.cpp \
     channelviewer.cpp \
     utils.cxx \
-    rpdatathread.cpp
+    ledcontrolgroupbox.cpp
 
 HEADERS  += redpitayacontroldialog.h \
     rpclient.h \
@@ -47,11 +47,12 @@ HEADERS  += redpitayacontroldialog.h \
     channelviewer.h \
     typedef.h \
     utils.h \
-    rpdatathread.h
+    ledcontrolgroupbox.h
 
 FORMS    += redpitayacontroldialog.ui \ 
     generatorgroupbox.ui \
-    oscillographgroupbox.ui
+    oscillographgroupbox.ui \
+    ledcontrolgroupbox.ui
 
 RESOURCES += \
     resource.qrc

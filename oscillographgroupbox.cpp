@@ -12,10 +12,6 @@ OscillographGroupBox::OscillographGroupBox(QWidget *parent) :
     viewer = new ChannelViewer(this);
     ui->horizontalLayout->insertWidget(0,viewer);
     setRPClient(0);
-    timer.setSingleShot(true);
-    timer.setInterval(50);
-    connect(&timer,SIGNAL(timeout()),this,SLOT(timeoutSlot()));
-    //
     for( int i = 0; i < 2; i++)
     {
         channelControl.addButton(new QCheckBox(tr("ch %1").arg(i+1),this),i+1);
@@ -23,7 +19,6 @@ OscillographGroupBox::OscillographGroupBox(QWidget *parent) :
     }
     channelControl.setExclusive(false);
     connect(&channelControl,SIGNAL(buttonClicked(int)),SLOT(channelControlClicked(int)));
-    //
 }
 
 OscillographGroupBox::~OscillographGroupBox()
@@ -40,7 +35,15 @@ void OscillographGroupBox::setRPClient(RPClient *client)
     {
         rpClient->resetOscilloscope();
         rpClient->setTriggerSource("CH1_PE");
+        for(int channel = 1; channel <= 2; channel++)
+        {
+            QAbstractButton *b = channelControl.button(channel);
+            if( b == 0 )
+                continue;
+            b->setChecked(rpClient->channelEnabled(channel));
+        }
         connect(rpClient,SIGNAL(updateChannelData(int,QVector<double>)),this,SLOT(updateChannelDataSlot(int,QVector<double>)));
+        connect(rpClient,SIGNAL(replotSignal()),viewer,SLOT(replot()));
     }
 }
 
@@ -50,7 +53,6 @@ void OscillographGroupBox::on_pushButtonAcq_clicked(bool checked)
         return;
     if( checked )
     {
-        // timer.start();
         ui->pushButtonAcq->setIcon(QIcon(":/Icons/CrystalClear/media-playback-stop-7.png"));
         rpClient->startAcquisition();
     }
@@ -61,41 +63,14 @@ void OscillographGroupBox::on_pushButtonAcq_clicked(bool checked)
     }
 }
 
-void OscillographGroupBox::timeoutSlot()
-{
-    const int sz = 512;
-    static QVector<double> xData;
-    static QVector<double> yData[2];
-    if( xData.size() < sz )
-    {
-        xData.resize(sz);
-        for(int i = 0; i < sz; i++)
-            xData[i] = i*16;
-    }
-    for(int i = 0; i < 2; i++)
-    {
-        if( yData[i].size() < sz )
-            yData[i].resize(sz);
-        for(int j = 0; j < sz; j++)
-            yData[i][j] = qrand()%100;
-        QAbstractButton *b = channelControl.button(i+1);
-        if( b == 0 )
-            continue;
-        if( ! b->isChecked() )
-            continue;
-        viewer->setChannelData(i+1,xData,yData[i]);
-    }
-    viewer->replot();
-    if( ui->pushButtonAcq->isChecked() )
-        timer.start();
-}
-
 void OscillographGroupBox::channelControlClicked(int id)
 {
     QAbstractButton *b = channelControl.button(id);
     if( b == 0 )
         return;
     bool checked = b->isChecked();
+    if( rpClient )
+        rpClient->enableChannel(id,checked);
     viewer->showChannelCurve(id,checked);
 }
 
@@ -114,5 +89,5 @@ void OscillographGroupBox::updateChannelDataSlot(int channel, const QVector<doub
             xData[i] = i;
     }
     viewer->setChannelData(channel,xData,data);
-    viewer->replot();
+    //viewer->replot();
 }

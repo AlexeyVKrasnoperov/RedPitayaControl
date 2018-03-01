@@ -20,17 +20,14 @@ public:
     explicit OscillographGroupBox(QWidget *parent = 0);
     ~OscillographGroupBox();
     void setRPClient(RPClient *client = 0);
-
 private slots:
     void on_pushButtonAcq_clicked(bool checked);
-    void timeoutSlot(void);
     void channelControlClicked(int);
     void updateChannelDataSlot(int channel, const QVector<double> & data);
 private:
     Ui::OscillographGroupBox *ui;
     ChannelViewer *viewer;
     RPClient *rpClient;
-    QTimer timer;
     QButtonGroup channelControl;
 };
 

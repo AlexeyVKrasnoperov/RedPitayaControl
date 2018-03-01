@@ -4,6 +4,7 @@
 #include "rpclient.h"
 #include "generatorgroupbox.h"
 #include "oscillographgroupbox.h"
+#include "ledcontrolgroupbox.h"
 #include <QRadioButton>
 
 
@@ -16,17 +17,11 @@ RedPitayaControlDialog::RedPitayaControlDialog(QWidget *parent) :
     generator = new GeneratorGroupBox(this);
     ui->verticalLayoutControl->insertWidget(1,generator);
     //
+    ledControl = new LedControlGroupBox(this);
+    ui->verticalLayoutControl->insertWidget(2,ledControl);
+    //
     oscillograph = new OscillographGroupBox(this);
     ui->horizontalLayoutMain->insertWidget(0,oscillograph);
-    //
-    ledButtons.setExclusive(false);
-    for(int i = 0; i < 8; i++)
-    {
-        QRadioButton *b = new QRadioButton(QString("LED%1").arg(i),ui->groupBoxLed);
-        ui->gridLayoutLed->addWidget(b,i/4,i%4);
-        ledButtons.addButton(b,i);
-    }
-    connect(&ledButtons,SIGNAL(buttonClicked(int)),this,SLOT(ledButtonClickedSlot(int)));
     //
     updateStatus();
     oscillograph->setFocus();
@@ -52,10 +47,7 @@ void RedPitayaControlDialog::updateStatus(void)
     if( rpClient == 0 )
     {
         setWindowTitle( tr("Red Pitaya Control") );
-        foreach (QAbstractButton *b, ledButtons.buttons()) {
-            b->setChecked(false);
-        }
-        ui->groupBoxLed->setDisabled(true);
+        ledControl->setRPClient(0);
         generator->setRPClient(0);
         oscillograph->setRPClient(0);
     }
@@ -78,26 +70,9 @@ void RedPitayaControlDialog::on_comboBoxHostName_currentIndexChanged(const QStri
         return;
     }    
     updateStatus();
-    // set initial led state
-    unsigned short states = 0;
-    if( rpClient->getLedState(states) )
-    {
-        ui->groupBoxLed->setDisabled(false);
-        foreach (QAbstractButton *b, ledButtons.buttons())
-            b->setChecked((states >> ledButtons.id(b)) & 0x01);
-    }
     //
+    ledControl->setRPClient(rpClient);
     generator->setRPClient(rpClient);
     oscillograph->setRPClient(rpClient);
 }
 
-void RedPitayaControlDialog::ledButtonClickedSlot(int id)
-{
-    if( rpClient != 0 )
-    {
-        QAbstractButton *b = ledButtons.button(id);
-        bool isChecked = b->isChecked();
-        if( ! rpClient->setLedState(id,isChecked) )
-            b->setChecked(!isChecked);
-    }
-}
